@@ -14,16 +14,17 @@
 
 Whether you're a student, club-head, council member, or admin — we got you.
 
-## 💡 Features
+## 🚀 Features
 
- Page                                      Features 
- 🔐 **Login/Signup**                       Role-based auth for Students, Club-Boards, Councils, and Admins 
- 🏠 **Dashboard**                          Navigate between all pages 
- 🔍 **Discover**                           View all clubs and SPS and join then
- 📁 **My Clubs**                           Your enrolled clubs in one clean view 
- 📆 **Calendar**                           Add upcoming club events or deadlines
- 📝 **Recruitments**                       Browse and apply to open positions 
- 🧾 **Applications**                       Club Boards can view applicants easily 
+| Page        | Feature Description                                                                 |
+|-------------|--------------------------------------------------------------------------------------|
+| 🔐 Login/Signup | Role-based authentication for Students, Club-Boards, Councils, and Admins        |
+| 🏠 Dashboard   | Navigate seamlessly between all pages                                            |
+| 🔍 Discover    | View all clubs and SPs in Manipal — and join them easily                          |
+| 📁 My Clubs    | See all your enrolled clubs in one clean view                                    |
+| 📆 Calendar    | Add and view upcoming club events, deadlines, and more                            |
+| 📝 Recruitments| Browse and apply to open club positions                                           |
+| 🧾 Applications| Club Boards can view applicants for their recruitment drives at a glance          |
 
 
 ## ⚙️ Tech Stack
