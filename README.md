@@ -37,7 +37,6 @@ Did we test it? Yes. Did it break 5 mins before deadline? Also yes.
 
 ## 📷 Screenshots
 
-### Sign In Page![Screenshot 2025-06-28 202134](https://github.com/user-attachments/assets/a8a4a829-53ae-4d48-835e-9d44556ddb53)
 ### Dashboard![Screenshot 2025-06-28 202425](https://github.com/user-attachments/assets/ad50cc35-38e3-4cad-b91a-fe8802fe44c2)
 ### Discover Page![Screenshot 2025-06-28 202506](https://github.com/user-attachments/assets/db99587f-00e4-4893-8c15-58b5585b5292)
 ### Myclubs Page![Screenshot 2025-06-28 202712](https://github.com/user-attachments/assets/c9bf2b59-a66b-48d9-a8ab-2487a9410f33)
@@ -46,6 +45,8 @@ Did we test it? Yes. Did it break 5 mins before deadline? Also yes.
 ### Recruitments Page
 ![Screenshot 2025-06-28 203124](https://github.com/user-attachments/assets/66db5375-36ee-43ab-a06b-84007cc1afa1)
 ### Recruitment Form![Screenshot 2025-06-28 203030](https://github.com/user-attachments/assets/514b7d20-af58-4319-9288-1e016fe1eb73)
+### Gallery Page (kindly watch the video or run locally to see more)![Screenshot 2025-06-28 203445](https://github.com/user-attachments/assets/2dcc96b7-3acf-483d-bfaf-f2c00cba1054)
+
 
 
 
