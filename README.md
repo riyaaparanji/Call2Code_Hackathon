@@ -35,7 +35,7 @@ Whether you're a student, club-head, council member, or admin — we got you.
 
 Did we test it? Yes. Did it break 5 mins before deadline? Also yes. 
 
-## 📷 Screenshots
+## 📷 A glimpse into ClubConnect
 
 ### Dashboard![Screenshot 2025-06-28 202425](https://github.com/user-attachments/assets/ad50cc35-38e3-4cad-b91a-fe8802fe44c2)
 ### Discover Page![Screenshot 2025-06-28 202506](https://github.com/user-attachments/assets/db99587f-00e4-4893-8c15-58b5585b5292)
