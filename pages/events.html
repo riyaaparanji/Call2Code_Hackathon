@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+  <title>Events</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0a1e 0%, #1a0d2e 25%, #0f0a1e 50%, #2d1b4d 75%, #0f0a1e 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: white;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      justify-items: center;
+      align-items: start;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1200px) {
+      .events-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .event-card {
+      background: linear-gradient(145deg, rgba(75, 0, 130, 0.15), rgba(45, 27, 77, 0.1));
+      border: 1px solid rgba(102, 51, 153, 0.4);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      height: 630px;
+      width: 360px;
+      box-shadow: 0 8px 32px rgba(45, 27, 77, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102, 51, 153, 0.15) 0%, transparent 50%, rgba(75, 0, 130, 0.15) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(102, 51, 153, 0.7);
+      box-shadow: 0 20px 60px rgba(45, 27, 77, 0.3), 0 0 30px rgba(102, 51, 153, 0.4);
+    }
+
+    .event-card:hover::before {
+      opacity: 1;
+    }
+
+    .event-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #e879f9, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+
+    .event-date {
+      font-weight: bold;
+      color: #c4b5fd;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(196, 181, 253, 0.3);
+    }
+
+    .event-location {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #ddd6fe;
+    }
+
+    .event-club {
+      font-size: 0.85rem;
+      color: #a78bfa;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .event-description {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .event-img {
+      width: 350px;
+      height: 300px;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover .event-img {
+      transform: scale(1.05);
+    }
+    
+  </style>
+</head>
+<body>
+  <h1>🎉 Upcoming Events
+    
+  </h1>
+  
+  <div class="events-grid" id="eventsGrid"></div>
+
+  <script type="module">
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+     apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+  authDomain: "club-management-hackathon.firebaseapp.com",
+  projectId: "club-management-hackathon",
+  storageBucket: "club-management-hackathon.firebasestorage.app",
+  messagingSenderId: "341316073446",
+  appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Loading and injecting the events from fb
+    async function loadEvents() {
+      const grid = document.getElementById("eventsGrid");
+      const snapshot = await getDocs(collection(db, "events"));
+
+      snapshot.forEach((doc) => {
+        const event = doc.data();
+        const card = document.createElement("div");
+        card.className = "event-card";
+        card.innerHTML = `
+        <img src="${event.imageUrl}" alt="${event.title}" class="event-img">
+           <div class="event-title">${event.title}</div>
+          <div class="event-date">${event.date}</div>
+          <div class="event-location">📍 ${event.location}</div>
+          <div class="event-club">Organized by: ${event.club}</div>
+          <div class="event-description">${event.description}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>

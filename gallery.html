@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Gallery</title>
+        <link rel="icon" type="image/x-icon" href="/images/icon.jpg">
+
+    <link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 style="margin-top: 65px;">Gallery</h1>
+            <p>A peek into the heart of college life- the events and clubs</p>
+        </div>
+
+        <a href="Fests.html">
+            <div class="gallery">
+                <div class="gallery-item">
+                    <div class="gallery-icon">
+                        🎉
+                    </div>
+                <div class="gallery-content">
+                    <div class="gallery-title">
+                        Fests
+                    </div>
+                    <div class="gallery-description">
+                        Where Manipal's spirit comes alive and memories that last a lifetime
+                    </div>
+                </div>
+            </div>
+        </a>
+
+            <a href="Photography.html">
+                <div class="gallery-item">
+                    <div class="gallery-icon">📷</div>
+                <div class="gallery-content">
+                    <div class="gallery-title">Photography</div>
+                    <div class="gallery-description">Capturing moments that tell compelling visual stories</div>
+                </div>
+            </div>
+            </a>
+
+            <a href="Acheivements.html">
+            <div class="gallery-item">
+                <div class="gallery-icon">
+                    🏆
+                </div>
+                <div class="gallery-content">
+                    <div class="gallery-title">
+                        Achievements
+                    </div>
+                    <div class="gallery-description">What sets the bar high and keeps the fire going!</div>
+                </div>
+            </div>
+            </a>
+            <a href="flagship.html">
+            <div class="gallery-item">
+                <div class="gallery-icon">📢 </div>
+                <div class="gallery-content">
+                    <div class="gallery-title">Flagship Events</div>
+                    <div class="gallery-description">Flagship fests that define the Manipal experience</div>
+                </div>
+            </div>
+            </a>
+
+    <script>
+        // Add ripple effect on click
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple-effect');
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ripple.style.left = x - 50 + 'px';
+                ripple.style.top = y - 50 + 'px';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.floating-element').forEach((element, index) => {
+                const speed = (index + 1) * 0.5;
+                const x = (mouseX - 0.5) * speed * 20;
+                const y = (mouseY - 0.5) * speed * 20;
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+       
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

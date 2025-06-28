@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - ClubConnect</title>
+    <link rel="icon" type="image/x-icon" href="/images/icon.jpg">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg-dark: #0f0f23;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --bg-sidebar: rgba(15, 15, 35, 0.95);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --hover-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-sidebar);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+
+    .logo {
+      padding: 0 2rem 2rem;
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 2rem;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 0 1rem;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-primary);
+      background: var(--hover-bg);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* User Profile in Sidebar */
+    .user-profile {
+      position: absolute;
+      bottom: 2rem;
+      left: 1rem;
+      right: 1rem;
+      padding: 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .user-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 2rem;
+      transition: margin-left 0.3s ease;
+    }
+
+    .main-content.expanded {
+      margin-left: 0;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-left h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-left p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      padding: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-title {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      font-size: 1.5rem;
+      padding: 0.5rem;
+      border-radius: 12px;
+      background: var(--glass-bg);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-change {
+      font-size: 0.8rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-change.positive {
+      color: var(--success);
+    }
+
+    .stat-change.negative {
+      color: var(--danger);
+    }
+
+    .stat-change.neutral {
+      color: var(--text-muted);
+    }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Activity Feed */
+    .activity-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .view-all {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .activity-icon.event {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--primary);
+    }
+
+    .activity-icon.club {
+      background: rgba(236, 72, 153, 0.2);
+      color: var(--secondary);
+    }
+
+    .activity-icon.announcement {
+      background: rgba(6, 182, 212, 0.2);
+      color: var(--accent);
+    }
+
+    .activity-content h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .activity-content p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .action-icon {
+      font-size: 1.5rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+    }
+
+    .action-content h4 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .action-content p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Upcoming Events */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .event-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .event-date {
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-club {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .event-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .no-data {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 2rem;
+      font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card, .activity-card, .event-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .details{
+      align-content: baseline;
+    }
+
+    .details {
+  position: fixed;
+  bottom: 20px;    /* distance from bottom */
+  left: 20px;      /* distance from left */
+  display: flex;
+  align-items: center;
+  gap: 10px;       /* space between avatar and info */
+  background: rgba(255, 255, 255, 0.1); /* optional: subtle glass effect */
+  padding: 10px 14px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px); /* optional: frosted effect */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* optional: shadow */
+  z-index: 1000;
+}
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #4a4a4a;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.user-info h4,
+.user-info p {
+  margin: 0;
+  line-height: 1.2;
+  color: white; /* or dark depending on background */
+}
+
+.img{
+  height: 150px;
+  width: 230px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">
+        <h1>ClubConnect</h1>
+      </div>
+      
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="dashboard.html" class="nav-link active">
+              <span class="nav-icon">🏠</span>
+              Dashboard
+            </a>
+          </li>
+           <li class="nav-item">
+            <a href="discover.html" class="nav-link">
+              <span class="nav-icon">🔍</span>
+              Discover Clubs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="myclubs.html" class="nav-link">
+              <span class="nav-icon">🎯</span>
+              My Clubs
+            </a>
+          </li>
+             <li class="nav-item">
+            <a href= "events.html" class="nav-link">
+              <span class="nav-icon">✨</span>
+              Upcoming Events
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="calender.html" class="nav-link">
+              <span class="nav-icon">🗓️</span>
+              Calendar
+            </a>
+          </li>
+         
+       
+          <li class="nav-item">
+            <a href="recruitment.html" class="nav-link">
+              <span class="nav-icon">👥</span>
+              Recruitment
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../gallery.html" class="nav-link">
+              <span class="nav-icon">🖼️</span>
+              Gallery
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="learnmore.html" class="nav-link">
+              <span class="nav-icon">📚</span>
+              About ClubConnect
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="logout.html" class="nav-link">
+              <span class="nav-icon">⏻</span>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </nav>
+<div class="details">
+  <div class="user-avatar" id="user-avatar">UN</div>
+<div class="user-info">
+  <h4 class="insert-user-name">Loading...</h4>
+  <p>Student</p>
+</div>
+</div>
+      
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <header class="header">
+        <div class="header-left">
+          <h1 id="welcomeMessage">Welcome back! 👋</h1>
+        </div>
+        <div class="header-right">
+          <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+      </header>
+
+      <!-- Stats Grid -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">My Clubs</span>
+            <div class="stat-icon">🎯</div>
+          </div>
+            <img class="img" src="https://i.pinimg.com/736x/39/a8/50/39a8501e67487fa210b870e5f515c33c.jpg">
+          <div class="stat-change" id="myClubsChange">
+            Effortlessly manage all the clubs you’re a part of in one unified space. Whether it’s staying updated with the latest announcements, checking out internal events, or tracking your club roles and responsibilities, this section keeps everything organized. No more hunting through WhatsApp groups or scattered emails — your club world lives here.
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Upcoming Events</span>
+            <div class="stat-icon">📅</div>
+          </div>
+          <img class="img" src="https://i.pinimg.com/736x/3f/05/06/3f050682ccea841aab96723ff999756b.jpg">
+          <div class="stat-change" id="upcomingEventsChange">Never miss an exciting opportunity again. This section gives you a centralized view of all the latest events happening across the university — from guest lectures and workshops to competitions, fests, and informal hangouts. Browse what's around the corner, mark your calendar, and get involved in everything that sparks your interest.
+
+</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Event Calendar</span>
+            <div class="stat-icon">🔢</div>
+          </div>
+          <img class="img" src="https://i.pinimg.com/736x/5c/60/e5/5c60e51d951703af973c0ed931fa8af7.jpg">
+          <div class="stat-change" id="hoursVolunteeredChange">Visualize your semester like never before. The Event Calendar offers a clean, interactive timeline of all events scheduled across clubs, committees, and campus bodies. Easily toggle between weeks or months, avoid overlapping commitments, and take charge of your extracurricular planning with confidence and clarity.</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Recruitments</span>
+            <div class="stat-icon">👥</div>
+          </div>
+          <img class="img" src="https://i.pinimg.com/736x/c5/11/c6/c511c6861d3ae47196d8c2e33c80a08e.jpg">
+          <div class="stat-change" id="activeMembershipsChange">Explore club recruitments across Manipal in one place. This section is designed to simplify how you find and apply to roles — no more form-hopping or link-hunting. Browse open calls, learn about roles and responsibilities, and apply with a single click. Whether you’re a fresher eager to join or a senior looking to lead, your next opportunity begins here.</div>
+        </div>
+      </section>
+
+      <!-- Content Grid -->
+      <section class="content-grid">
+        <!-- Recent Activity -->
+        <!-- <div class="activity-card">
+          <div class="card-header">
+            <h2 class="card-title">Recent Activity</h2>
+            <a href="#" class="view-all">View All</a>
+          </div>
+          
+          <div class="activity-feed" id="activityFeed">
+            <div class="no-data">Loading recent activities...</div>
+          </div>
+        </div> -->
+
+        <!-- Quick Actions -->
+        <!-- <div class="quick-actions">
+          <a href="discover.html" class="action-btn">
+            <div class="action-icon">🔍</div>
+            <div class="action-content">
+              <h4>Discover Clubs</h4>
+              <p>Find new clubs to join</p>
+            </div>
+          </a>
+
+          <a href="calendar.html" class="action-btn">
+            <div class="action-icon">🗓️</div>
+            <div class="action-content">
+              <h4>View Calendar</h4>
+              <p>See all upcoming events</p>
+            </div>
+          </a>
+
+          <a href="myclubs.html" class="action-btn">
+            <div class="action-icon">🎯</div>
+            <div class="action-content">
+              <h4>My Clubs</h4>
+              <p>Manage your memberships</p>
+            </div>
+          </a>
+
+          <a href="recruitment.html" class="action-btn">
+            <div class="action-icon">👥</div>
+            <div class="action-content">
+              <h4>Recruitment</h4>
+              <p>Join recruitment drives</p>
+            </div>
+          </a>
+        </div>
+      </section> -->
+
+      <!-- Upcoming Events -->
+      <!-- <section>
+        <div class="card-header">
+          <h2 class="card-title">Upcoming Events</h2>
+          <a href="calendar.html" class="view-all">View Calendar</a>
+        </div>
+
+        <div class="events-grid" id="eventsGrid">
+          <div class="no-data">Loading upcoming events...</div>
+        </div>
+      </section>
+    </main>
+  </div> -->
+
+  <!-- Firebase SDKs (if not already included) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Your Firebase config (REPLACE with yours if not already included)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+  authDomain: "club-management-hackathon.firebaseapp.com",
+  projectId: "club-management-hackathon",
+  storageBucket: "club-management-hackathon.firebasestorage.app",
+  messagingSenderId: "341316073446",
+  appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // DOMContentLoaded ensures all elements are loaded before accessing them
+  document.addEventListener("DOMContentLoaded", () => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const docRef = db.collection("users").doc(user.uid);
+          const docSnap = await docRef.get();
+          if (docSnap.exists) {
+            const userData = docSnap.data();
+            const name = userData.name || "User";
+
+            // Example DOM replacements
+            document.querySelectorAll(".insert-user-name").forEach(el => {
+              el.textContent = name;
+            });
+
+            // Optional: Set avatar initials
+            const initials = name.split(' ').map(word => word[0]).join('').slice(0, 2).toUpperCase();
+            const avatarEl = document.getElementById("user-avatar");
+            if (avatarEl) avatarEl.textContent = initials;
+
+          } else {
+            console.error("User document not found.");
+          }
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+        }
+      } else {
+        window.location.href = "login.html"; // Redirect if not logged in
+      }
+    });
+  });
+</script>
+
+  </body>
+  </html>

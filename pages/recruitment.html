@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+  <title>Recruitments</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0a1e 0%, #1a0d2e 25%, #0f0a1e 50%, #2d1b4d 75%, #0f0a1e 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: white;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+    }
+
+    .recs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      justify-items: center;
+      align-items: start;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1200px) {
+      .recs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .recs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .rec-card {
+      background: linear-gradient(145deg, rgba(75, 0, 130, 0.15), rgba(45, 27, 77, 0.1));
+      border: 1px solid rgba(102, 51, 153, 0.4);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      height: 550px;
+      width: 360px;
+      box-shadow: 0 8px 32px rgba(45, 27, 77, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rec-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102, 51, 153, 0.15) 0%, transparent 50%, rgba(75, 0, 130, 0.15) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .rec-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(102, 51, 153, 0.7);
+      box-shadow: 0 20px 60px rgba(45, 27, 77, 0.3), 0 0 30px rgba(102, 51, 153, 0.4);
+    }
+
+    .rec-card:hover::before {
+      opacity: 1;
+    }
+
+    .rec-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #e879f9, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+
+    .rec-date {
+      font-weight: bold;
+      color: #c4b5fd;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(196, 181, 253, 0.3);
+    }
+
+    .rec-location {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #ddd6fe;
+    }
+
+    .rec-club {
+      font-size: 0.85rem;
+      color: #a78bfa;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .rec-description {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .rec-img {
+      width: 350px;
+      height: 300px;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .rec-card:hover .event-img {
+      transform: scale(1.05);
+    }
+    .apply-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background: #a855f7;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.apply-btn:hover {
+  background: #9333ea;
+}
+
+
+#applyFormModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.form-container {
+  background: linear-gradient(145deg, rgba(30, 27, 75, 0.95), rgba(45, 27, 77, 0.9));
+  border: 1px solid rgba(102, 51, 153, 0.6);
+  color: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(45, 27, 77, 0.4);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-container h3 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #e879f9, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  flex: 1 1 100%;
+}
+
+.form-group label {
+  color: #c4b5fd;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.8rem;
+  border: 1px solid rgba(102, 51, 153, 0.4);
+  border-radius: 10px;
+  background: rgba(30, 27, 75, 0.3);
+  color: white;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+  background: rgba(30, 27, 75, 0.5);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #a78bfa;
+}
+
+.form-group select option {
+  background: #1e1b4b;
+  color: white;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #a78bfa;
+  padding: 0.8rem 2rem;
+  border: 1px solid rgba(102, 51, 153, 0.4);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: rgba(102, 51, 153, 0.2);
+  border-color: #a855f7;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .form-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+  }
+}
+
+    
+  </style>
+</head>
+<body>
+  <h1>🎉 Recruitments
+    
+  </h1>
+  
+  <div class="recs-grid" id="recGrid">
+  </div>
+  
+  <div id="applyFormModal">
+    <div class="form-container">
+      <h3 id="applyFormTitle">Apply for Position</h3>
+      <form id="applicationForm">
+        <input type="hidden" id="recruitmentId">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="applicantName">Full Name *</label>
+            <input type="text" id="applicantName" placeholder="Enter your full name" required>
+          </div>
+          <div class="form-group">
+            <label for="applicantRegNo">Registration Number *</label>
+            <input type="text" id="applicantRegNo" placeholder="e.g., 21BCE1234" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="applicantBranch">Branch *</label>
+            <select id="applicantBranch" required>
+              <option value="">Select your branch</option>
+              <option value="CSE">Computer Science Engineering</option>
+              <option value="ECE">Electronics & Communication</option>
+              <option value="EEE">Electrical & Electronics</option>
+              <option value="MECH">Mechanical Engineering</option>
+              <option value="CIVIL">Civil Engineering</option>
+              <option value="IT">Information Technology</option>
+              <option value="BIOTEC">Biotechnology</option>
+              <option value="CHEM">Chemical Engineering</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="applicantYear">Year of Study *</label>
+            <select id="applicantYear" required>
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="applicantEmail">Email Address *</label>
+            <input type="email" id="applicantEmail" placeholder="your.email@example.com" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="applicantExperience">Previous Experience</label>
+            <textarea id="applicantExperience" placeholder="Describe any relevant experience, projects, or achievements..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="applicationReason">Why should we select you? *</label>
+            <textarea id="applicationReason" placeholder="Tell us what makes you the perfect candidate for this role..." required></textarea>
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" class="btn-submit">Submit Application</button>
+          <button type="button" class="btn-cancel" onclick="closeForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+  <script type="module">
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+     apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+  authDomain: "club-management-hackathon.firebaseapp.com",
+  projectId: "club-management-hackathon",
+  storageBucket: "club-management-hackathon.firebasestorage.app",
+  messagingSenderId: "341316073446",
+  appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Loading and injecting events from fb
+    async function loadRecs() {
+      const grid = document.getElementById("recGrid");
+      const snapshot = await getDocs(collection(db, "recruitments"));
+
+
+      snapshot.forEach((doc) => {
+  const recruitments = doc.data();
+  const card = document.createElement("div");
+  card.className = "rec-card";
+  card.innerHTML = `
+    <img src="${recruitments.imageUrl}" alt="${recruitments.title}" class="rec-img">
+    <div class="rec-title">${recruitments.title}</div>
+    <div class="rec-date">${recruitments.club}</div>
+    <div class="rec-location">📍 ${recruitments.role}</div>
+    <div class="rec-club">Deadline : ${recruitments.deadline}</div>
+    <div class="rec-description">Hiring: ${recruitments.hiring}</div>
+    <button class="apply-btn" data-id="${doc.id}">Apply Now</button>
+
+  `;
+  grid.appendChild(card);
+});
+    }
+    loadRecs();
+    import { addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('apply-btn')) {
+    const recId = e.target.dataset.id;
+    const title = e.target.dataset.title;
+    const club = e.target.dataset.club;
+
+    document.getElementById('recruitmentId').value = recId;
+    document.getElementById('applyFormTitle').innerText = `Apply for ${title} (${club})`;
+    document.getElementById('applyFormModal').style.display = 'flex';
+  }
+});
+
+window.closeForm = function () {
+  document.getElementById('applyFormModal').style.display = 'none';
+};
+
+document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('applicantName').value;
+  const regNo = document.getElementById('applicantRegNo').value;
+  const branch = document.getElementById('applicantBranch').value;
+  const year = document.getElementById('applicantYear').value;
+  const email = document.getElementById('applicantEmail').value;
+  const experience = document.getElementById('applicantExperience').value;
+  const reason = document.getElementById('applicationReason').value;
+  const recId = document.getElementById('recruitmentId').value;
+
+  try {
+    await addDoc(collection(db, "applications"), {
+      name,
+      registrationNumber: regNo,
+      branch,
+      yearOfStudy: year,
+      email,
+      experience,
+      reason,
+      recruitmentId: recId,
+      submittedAt: new Date()
+    });
+
+    alert("Application submitted successfully!");
+    closeForm();
+    document.getElementById('applicationForm').reset();
+  } catch (err) {
+    console.error(err);
+    alert("Error submitting application.");
+  }
+});
+
+  </script>
+</body>
+</html>

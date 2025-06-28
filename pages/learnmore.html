@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About ClubConnect - Modern Student Organization Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --bg-dark: #0f0f23;
+      --bg-section: rgba(255, 255, 255, 0.03);
+      --bg-section-alt: rgba(255, 255, 255, 0.05);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+      animation: backgroundFloat 25s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    @keyframes backgroundFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(1deg); }
+      66% { transform: translateY(10px) rotate(-1deg); }
+    }
+
+    /* Floating geometric shapes */
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: floatShape 20s infinite linear;
+    }
+
+    .shape:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+      top: 60%;
+      right: 10%;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      transform: rotate(45deg);
+      animation-delay: -7s;
+    }
+
+    .shape:nth-child(3) {
+      top: 30%;
+      right: 20%;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, var(--accent), var(--secondary));
+      border-radius: 30%;
+      animation-delay: -14s;
+    }
+
+    @keyframes floatShape {
+      0% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-30px) rotate(90deg); }
+      50% { transform: translateY(0px) rotate(180deg); }
+      75% { transform: translateY(30px) rotate(270deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+
+    .about-hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.1) 0%, 
+        rgba(236, 72, 153, 0.1) 50%, 
+        rgba(6, 182, 212, 0.1) 100%);
+      opacity: 0.5;
+      z-index: -1;
+    }
+
+    .about-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .about-hero h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .about-hero p {
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      font-weight: 300;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .about-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      position: relative;
+      animation: fadeInUp 0.8s ease-out;
+      text-align: center;
+    }
+
+    .about-section.alt {
+      background: var(--bg-section-alt);
+      backdrop-filter: blur(10px);
+      margin: 2rem auto;
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .about-section.center {
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .about-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .about-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+      animation: expandLine 1s ease-out 0.5s both;
+    }
+
+    @keyframes expandLine {
+      from { width: 0; }
+      to { width: 60px; }
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .about-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .about-section li {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-section li::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .about-section li:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .about-section li:hover::before {
+      left: 100%;
+    }
+
+    .about-section li:nth-child(1):hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .about-section li:nth-child(2):hover {
+      background: rgba(236, 72, 153, 0.1);
+    }
+
+    .about-section li:nth-child(3):hover {
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    .about-section li:nth-child(4):hover {
+      background: rgba(168, 85, 247, 0.1);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2.5rem;
+      margin: 0.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      min-width: 180px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn.secondary {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+    }
+
+    .btn.secondary:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Scroll animations */
+    .about-section {
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUpScroll 0.8s ease-out forwards;
+    }
+
+    .about-section:nth-child(2) { animation-delay: 0.2s; }
+    .about-section:nth-child(3) { animation-delay: 0.4s; }
+    .about-section:nth-child(4) { animation-delay: 0.6s; }
+    .about-section:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes fadeInUpScroll {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .about-hero {
+        min-height: 50vh;
+        padding: 3rem 1rem;
+      }
+
+      .about-section {
+        padding: 3rem 1rem;
+      }
+
+      .about-section.alt {
+        margin: 1rem auto;
+        padding: 3rem 1.5rem;
+        max-width: 90%;
+      }
+
+      .about-section li {
+        padding: 1rem;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0.5rem 0;
+      }
+    }
+
+    /* Glow effects */
+    .glow-accent {
+      position: absolute;
+      top: 20%;
+      right: 10%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 70%);
+      border-radius: 50%;
+      filter: blur(30px);
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <div class="glow-accent"></div>
+
+  <section class="about-hero">
+    <h1>About <span>ClubConnect</span></h1>
+    <p>Empowering student clubs through modern tools and seamless collaboration.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>🎯 Our Mission</h2>
+    <p>
+      We're here to simplify how student clubs function — from event planning to recruitment and analytics. 
+      Our goal is to connect students, enhance collaboration, and foster a thriving campus community through innovative technology and intuitive design.
+    </p>
+  </section>
+
+  <section class="about-section alt">
+    <h2>🚀 Key Features</h2>
+    <ul>
+      <li>📅 Easy Event Management and Promotion with intelligent scheduling</li>
+      <li>👥 View all the clubs you've joined at a glance, with quick access to their latest activities and updates.</li>
+      <li>📝 Streamlined Club Recruitment with automated workflows</li>
+      <li>📊 View all upcoming events across your enrolled clubs in one unified calendar</li>
+    </ul>
+  </section>
+
+  <section class="about-section">
+    <h2>💡 Why We Built This</h2>
+    <p>
+      Student clubs are the heart of any campus. Yet managing them is often chaotic and disconnected.
+      This platform was built by passionate students who experienced these challenges firsthand. We created a unified, beautiful, and efficient solution that serves everyone — from casual members to club administrators and university staff.
+    </p>
+  </section>
+
+  <section class="about-section center">
+    <a href="signup.html" class="btn primary">Get Started</a>
+    <a href="/index.html" class="btn secondary">Back to Home</a>
+  </section>
+</body>
+</html>

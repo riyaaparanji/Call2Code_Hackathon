@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Clubs - ClubConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    club-card {
+  padding: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding-bottom: 5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  height: 555px;
+  width: 395px;
+  margin-right: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 15px;}
+
+/* Hover and glass effects */
+.club-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: inline-block
+}
+
+.club-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.club-card:hover::before {
+  opacity: 1;
+}
+    .club-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .club-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .club-actions {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .join-btn, .info-btn {
+      flex: 1;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .join-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .join-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      cursor: pointer;
+    }
+
+    .join-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .join-btn.joined {
+      background: var(--success);
+      cursor: default;
+    }
+
+    .info-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .info-btn:hover {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--glass-border);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--text-primary);
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+   
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      
+
+      .search-bar {
+        flex-direction: column;
+      }
+
+      
+
+      .club-actions {
+        flex-direction: column;
+      }
+    }
+
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .club-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .club-card:nth-child(2n) {
+      animation-delay: 0.1s;
+    }
+
+    .club-card:nth-child(3n) {
+      animation-delay: 0.2s;
+    }
+    .imgdiv{
+      width: 350px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 2px solid #71717a; 
+  margin-bottom: 5px;
+
+    }
+  
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --bg-dark: #0f0f23;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    
+    .navbar {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    /* Main content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: var(--text-secondary);
+    }
+
+    .loading-spinner {
+      border: 3px solid var(--glass-border);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-right: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Clubs grid */
+    .clubs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+.club-card {
+  padding: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding-bottom: 5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  height: 375px;
+  width: 380px;
+  margin-right: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 15px;}
+
+
+/* Hover and glass effects */
+.club-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: inline-block
+  
+}
+
+.club-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.club-card:hover::before {
+  opacity: 1;
+}
+    .club-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .club-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .club-actions {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+
+    .club-header {
+      position: relative;
+      height: 120px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .club-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .club-icon {
+      font-size: 3rem;
+      z-index: 1;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .club-content {
+      padding: 2rem;
+    }
+
+    .club-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .img{
+  width: 350px;
+  height: 400px;
+  object-fit: contain;
+  border-radius: 20px;
+  border: 2px solid #71717a; /* ✅ fixed */
+  margin-bottom: 5px;
+} 
+    
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">ClubConnect</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Home</a></li>
+        <li><a href="calender.html">Calender</a></li>
+        <li><a href="myclubs.html" class="active">My Clubs</a></li>
+        <li><a href="discover.html">Discover</a></li>
+        <li><a href="recruitment.html">Recruitments</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>My Clubs</h1>
+      <p>Manage and stay connected with all your enrolled student organizations</p>
+    </div>
+
+ 
+<div id="clubsContainer" class="clubs-grid"></div>
+ <div id="emptyState" style="display: none;">No clubs found.</div> 
+
+
+
+    <!-- Error State -->
+    <div class="error-state" id="errorState" style="display: none;">
+      <div class="error-message" id="errorMessage"></div>
+      <button class="btn btn-primary" onclick="loadUserClubs()">Try Again</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" style="display: none;">
+      <div class="stats" id="statsSection">
+        <div class="stat-card">
+          <div class="stat-number" id="totalClubs">0</div>
+          <div class="stat-label">Total Clubs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="activeClubs">0</div>
+          <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalMembers">0</div>
+          <div class="stat-label">Total Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="avgRating">0</div>
+          <div class="stat-label">Avg Rating</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search your clubs..." id="searchInput">
+        </div>
+        <button class="filter-btn active" data-filter="all">All Clubs</button>
+        <button class="filter-btn" data-filter="academic">Academic</button>
+        <button class="filter-btn" data-filter="social">Social</button>
+        <button class="filter-btn" data-filter="sports">Sports</button>
+        <button class="filter-btn" data-filter="arts">Arts</button>
+        <button class="filter-btn" data-filter="professional">Professional</button>
+      </div>
+
+      
+        <div id="clubsContainer"></div>
+
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No clubs found</h3>
+        <p>Try adjusting your search or filter criteria, or <a href="discover.html" style="color: var(--primary);">discover new clubs</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Importing Firebase -->
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+    authDomain: "club-management-hackathon.firebaseapp.com",
+    projectId: "club-management-hackathon",
+    storageBucket: "club-management-hackathon.firebasestorage.app",
+    messagingSenderId: "341316073446",
+    appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  const container = document.getElementById("clubsContainer");
+  const searchInput = document.getElementById("searchInput");
+  const emptyState = document.getElementById("emptyState");
+
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      console.log("No user logged in. Redirecting...");
+      window.location.href = "login.html";
+      return;
+    }
+
+    console.log("Logged in as:", user.uid);
+
+    try {
+      const userRef = db.collection("users").doc(user.uid);
+      const userSnap = await userRef.get();
+
+      if (!userSnap.exists) {
+        console.log("No user document found.");
+        container.innerHTML = "<p>User not found in database.</p>";
+        return;
+      }
+
+      const joinedClubIds = userSnap.data().joinedClubs || [];
+      console.log("Joined Clubs IDs:", joinedClubIds);
+
+      if (joinedClubIds.length === 0) {
+        emptyState.style.display = "block";
+        container.innerHTML = "<p>You haven't joined any clubs yet.</p>";
+        return;
+      }
+
+      const myClubs = [];
+      for (const clubId of joinedClubIds) {
+        console.log("Fetching club ID:", clubId);
+        const clubDoc = await db.collection("clubs").doc(clubId).get();
+        if (clubDoc.exists) {
+          myClubs.push({ id: clubDoc.id, ...clubDoc.data() });
+        } else {
+          console.log(`Club ID not found: ${clubId}`);
+        }
+      }
+
+      console.log("Fetched club documents:", myClubs);
+
+      function renderClubs(clubs) {
+        const query = searchInput.value.toLowerCase();
+        const filtered = clubs.filter(club =>
+          club.name.toLowerCase().includes(query) ||
+          (club.tags && club.tags.some(tag => tag.toLowerCase().includes(query)))
+        );
+
+        container.innerHTML = "";
+
+        if (filtered.length === 0) {
+          emptyState.style.display = "block";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        
+        filtered.forEach(club => {
+          const card = document.createElement("div");
+          card.className = "club-card";
+          card.innerHTML = `
+            <div class="club-header">
+              <div>
+                <div >
+                   <img class="img" src="${club.imageUrl || 'default-club.png'}" alt="${club.name}"  />
+                </div>
+
+                
+              </div>
+            </div>
+            <h3 class="club-title">${club.name}</h3>
+            <p class="club-description">${club.description || "No description available."}</p>
+            <div class="club-tags">
+              ${(club.tags || []).map(tag => `<span class="club-tag">${tag}</span>`).join("")}
+            </div>
+            <div class="club-actions">
+              
+              <a href="https://www.manipal.edu/mu/campus-life/around-campus/list-of-student-clubs.html" target="_blank" class="info-btn">More Info</a>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      }
+
+      renderClubs(myClubs);
+      searchInput.addEventListener("input", () => renderClubs(myClubs));
+    } catch (err) {
+      console.error("🔥 Error loading My Clubs:", err);
+      container.innerHTML = `<p style="color:red;">Failed to load clubs. Try again later.</p>`;
+    }
+  });
+</script>
+
+
+
+
+
+</body>
+</html>

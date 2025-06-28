@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logging Out - ClubConnect</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <!-- Optional: Add favicon, styles -->
+</head>
+<body>
+  <div style="text-align:center;margin-top:100px;">
+    <h2>Logging you out...</h2>
+  </div>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+    apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+  authDomain: "club-management-hackathon.firebaseapp.com",
+  projectId: "club-management-hackathon",
+  storageBucket: "club-management-hackathon.firebasestorage.app",
+  messagingSenderId: "341316073446",
+  appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Sign out the user
+    firebase.auth().signOut().then(() => {
+      // Redirect to login page after sign-out
+      window.location.href = "login.html";
+    }).catch((error) => {
+      alert("Error signing out: " + error.message);
+    });
+  </script>
+</body>
+</html>

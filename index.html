@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClubConnect - Modern Student Organization Platform</title>
+  <link rel="icon" href="pages\clubconnect_icon_64x64.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+      --bg-dark: #0f0f23;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(99, 102, 241, 0.6);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    .particle:nth-child(2) { background: rgba(236, 72, 153, 0.6); animation-delay: -5s; }
+    .particle:nth-child(3) { background: rgba(6, 182, 212, 0.6); animation-delay: -10s; }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      text-align: center;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease-in-out infinite;
+      letter-spacing: -0.02em;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: var(--text-secondary);
+      margin-bottom: 4rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+      font-weight: 300;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+      animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:nth-child(1):hover::before {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
+    }
+
+    .card:nth-child(2):hover::before {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.05));
+    }
+
+    .card:nth-child(3):hover::before {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
+    }
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease-out 0.9s both;
+    }
+
+    .btn {
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn.secondary {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+    }
+
+    .btn.secondary:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 1rem;
+      }
+      
+      .feature-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    
+    .glow-1 {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.3), transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .glow-2 {
+      position: absolute;
+      bottom: 20%;
+      right: 15%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.3), transparent 70%);
+      border-radius: 50%;
+      filter: blur(30px);
+      animation: pulse 4s ease-in-out infinite 2s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles">
+    <div class="particle" style="left: 10%; animation-duration: 15s;"></div>
+    <div class="particle" style="left: 30%; animation-duration: 18s;"></div>
+    <div class="particle" style="left: 50%; animation-duration: 12s;"></div>
+    <div class="particle" style="left: 70%; animation-duration: 20s;"></div>
+    <div class="particle" style="left: 90%; animation-duration: 16s;"></div>
+  </div>
+
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">ClubConnect</h1>
+      <p class="hero-subtitle">
+        Connect, collaborate, and create amazing experiences with your student organizations through our next-generation platform
+      </p>
+
+      <div class="feature-cards">
+        <div class="card">
+          <div class="icon">📅</div>
+          <h3>Event Management</h3>
+          <p>Create, manage, and promote your club events with intelligent scheduling and seamless integration.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🗓️</div>
+          <h3>Events Calendar</h3>
+          <p>View all upcoming events across your enrolled clubs in one unified calendar with customizable notifications and reminders.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎯</div>
+          <h3>My Clubs</h3>
+          <p>Access a dedicated page showcasing all your enrolled clubs with quick links to their activities and updates.</p>
+        </div>
+      </div>
+
+      <div class="buttons">
+<section class="about-section center">
+  <!-- index.html -->
+<button id="get-started" class="btn primary">Get Started</button>
+
+<script>
+  document.getElementById("get-started").addEventListener("click", () => {
+    window.location.href = "/pages/signup.html";
+  });
+</script>
+
+</section>
+        <a href="pages/learnmore.html" class="btn secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCX2pGJujexryfOrEXdpGsWwjDoNg1p2v0",
+    authDomain: "clubconnect-770ca.firebaseapp.com",
+    projectId: "clubconnect-770ca",
+    storageBucket: "clubconnect-770ca.appspot.com",
+    messagingSenderId: "852846613957",
+    appId: "1:852846613957:web:6730bf92243b0fe15ca7ac"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  document.getElementById("google-signin").addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Logged in as:", user.displayName);
+      window.location.href = "/pages/dashboard.html";
+    } catch (error) {
+      console.error("Login error:", error.code, error.message);
+      alert("Failed to log in: " + error.message);
+    }
+  });
+</script>
+
+
+
+</body>
+</html>
