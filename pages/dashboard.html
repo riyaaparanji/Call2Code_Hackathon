@@ -769,77 +769,12 @@
         </div>
       </section>
 
-      <!-- Content Grid -->
-      <section class="content-grid">
-        <!-- Recent Activity -->
-        <!-- <div class="activity-card">
-          <div class="card-header">
-            <h2 class="card-title">Recent Activity</h2>
-            <a href="#" class="view-all">View All</a>
-          </div>
-          
-          <div class="activity-feed" id="activityFeed">
-            <div class="no-data">Loading recent activities...</div>
-          </div>
-        </div> -->
-
-        <!-- Quick Actions -->
-        <!-- <div class="quick-actions">
-          <a href="discover.html" class="action-btn">
-            <div class="action-icon">🔍</div>
-            <div class="action-content">
-              <h4>Discover Clubs</h4>
-              <p>Find new clubs to join</p>
-            </div>
-          </a>
-
-          <a href="calendar.html" class="action-btn">
-            <div class="action-icon">🗓️</div>
-            <div class="action-content">
-              <h4>View Calendar</h4>
-              <p>See all upcoming events</p>
-            </div>
-          </a>
-
-          <a href="myclubs.html" class="action-btn">
-            <div class="action-icon">🎯</div>
-            <div class="action-content">
-              <h4>My Clubs</h4>
-              <p>Manage your memberships</p>
-            </div>
-          </a>
-
-          <a href="recruitment.html" class="action-btn">
-            <div class="action-icon">👥</div>
-            <div class="action-content">
-              <h4>Recruitment</h4>
-              <p>Join recruitment drives</p>
-            </div>
-          </a>
-        </div>
-      </section> -->
-
-      <!-- Upcoming Events -->
-      <!-- <section>
-        <div class="card-header">
-          <h2 class="card-title">Upcoming Events</h2>
-          <a href="calendar.html" class="view-all">View Calendar</a>
-        </div>
-
-        <div class="events-grid" id="eventsGrid">
-          <div class="no-data">Loading upcoming events...</div>
-        </div>
-      </section>
-    </main>
-  </div> -->
-
-  <!-- Firebase SDKs (if not already included) -->
+  
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // Your Firebase config (REPLACE with yours if not already included)
   const firebaseConfig = {
     apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
   authDomain: "club-management-hackathon.firebaseapp.com",
@@ -853,7 +788,7 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // DOMContentLoaded ensures all elements are loaded before accessing them
+
   document.addEventListener("DOMContentLoaded", () => {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -864,12 +799,9 @@
             const userData = docSnap.data();
             const name = userData.name || "User";
 
-            // Example DOM replacements
             document.querySelectorAll(".insert-user-name").forEach(el => {
               el.textContent = name;
             });
-
-            // Optional: Set avatar initials
             const initials = name.split(' ').map(word => word[0]).join('').slice(0, 2).toUpperCase();
             const avatarEl = document.getElementById("user-avatar");
             if (avatarEl) avatarEl.textContent = initials;

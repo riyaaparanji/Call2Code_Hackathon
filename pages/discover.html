@@ -54,8 +54,9 @@
   height: 300px;
   object-fit: cover;
   border-radius: 20px;
-  border: 2px solid #71717a; /* ✅ fixed */
+  border: 2px solid #71717a; 
   margin-bottom: 5px;
+  margin-left: 50px;
 }
 
 
@@ -271,10 +272,11 @@
   overflow: hidden;
   display: inline-block;
   height: 555px;
-  width: 395px;
+  width: 500px;
   margin-right: 15px;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  margin-bottom: 15px;}
+  margin-bottom: 15px;
+}
 
 /* Hover and glass effects */
 .club-card::before {
@@ -492,10 +494,16 @@
     .club-card:nth-child(3n) {
       animation-delay: 0.2s;
     }
+    .clubsContainer{
+    display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;}
   
   </style>
 </head>
 <body>
+  <div class="toast" id="toast"></div>
+
   <div class="dashboard">
     <aside class="sidebar">
       <div class="logo">
@@ -549,6 +557,14 @@
       const snapshot = await db.collection("clubs").get();
       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     }
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.className = `toast show ${type}`;
+  setTimeout(() => {
+    toast.className = "toast";
+  }, 3000);
+}
 
     async function renderClubs() {
       const container = document.getElementById("clubsContainer");
@@ -594,7 +610,8 @@
               ${(club.tags || []).map(tag => `<span class="club-tag">${tag}</span>`).join("")}
             </div>
             <div class="club-actions">
-              <button class="join-btn" onclick="alert('Join request sent!')">Join</button>
+              <button class="join-btn" onclick="joinClub('${club.id}', this)">Join</button>
+
               <a href="https://www.manipal.edu/mu/campus-life/around-campus/list-of-student-clubs.html" target="_blank" class="info-btn">More Info</a>
             </div>
           `;
@@ -607,6 +624,33 @@
         empty.innerHTML = `<h3>Error loading clubs</h3><p>Please try again later.</p>`;
       }
     }
+    function joinClub(clubId, button) {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      alert("You must be logged in to join a club.");
+      return;
+    }
+
+    try {
+      const userRef = db.collection("users").doc(user.uid);
+      await userRef.update({
+        joinedClubs: firebase.firestore.FieldValue.arrayUnion(clubId)
+      });
+
+      // Update UI
+      button.textContent = "Joined";
+      button.disabled = true;
+      button.classList.add("joined");
+
+      showToast("✅ Joined club successfully!", "success");
+    } catch (error) {
+      console.error("Error joining club:", error);
+      showToast(" Failed to join club.", "error");
+    }
+  });
+}
+
+
 
     window.onload = renderClubs;
   </script>

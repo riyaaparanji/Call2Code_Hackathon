@@ -429,7 +429,10 @@
     <div class="rec-location">📍 ${recruitments.role}</div>
     <div class="rec-club">Deadline : ${recruitments.deadline}</div>
     <div class="rec-description">Hiring: ${recruitments.hiring}</div>
-    <button class="apply-btn" data-id="${doc.id}">Apply Now</button>
+    <button class="apply-btn" data-id="abc123" data-title=${recruitments.title}>
+  Apply
+</button>
+
 
   `;
   grid.appendChild(card);
@@ -445,10 +448,12 @@ document.addEventListener('click', (e) => {
     const club = e.target.dataset.club;
 
     document.getElementById('recruitmentId').value = recId;
-    document.getElementById('applyFormTitle').innerText = `Apply for ${title} (${club})`;
+    document.getElementById('applyFormTitle').innerText = `Apply for ${title}`;
     document.getElementById('applyFormModal').style.display = 'flex';
   }
 });
+
+
 
 window.closeForm = function () {
   document.getElementById('applyFormModal').style.display = 'none';

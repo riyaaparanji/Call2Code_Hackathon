@@ -404,35 +404,6 @@
       </div>
     </div>
   </section>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCX2pGJujexryfOrEXdpGsWwjDoNg1p2v0",
-    authDomain: "clubconnect-770ca.firebaseapp.com",
-    projectId: "clubconnect-770ca",
-    storageBucket: "clubconnect-770ca.appspot.com",
-    messagingSenderId: "852846613957",
-    appId: "1:852846613957:web:6730bf92243b0fe15ca7ac"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-
-  document.getElementById("google-signin").addEventListener("click", async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("Logged in as:", user.displayName);
-      window.location.href = "/pages/dashboard.html";
-    } catch (error) {
-      console.error("Login error:", error.code, error.message);
-      alert("Failed to log in: " + error.message);
-    }
-  });
-</script>
 
 
 

@@ -421,7 +421,7 @@
             background: rgba(75, 85, 99, 0.8);
         }
 
-        /* Success message */
+        
         .success-message {
             position: fixed;
             top: 20px;
@@ -440,7 +440,7 @@
             to { transform: translateX(0); }
         }
 
-        /* Responsive design */
+        
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -505,14 +505,13 @@
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
 
-        <!-- Upcoming Events -->
         <div class="upcoming-events">
             <h3 class="section-title">Upcoming Events</h3>
             <div class="event-list" id="upcomingEvents"></div>
         </div>
     </div>
 
-    <!-- Modal -->
+ 
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -579,7 +578,6 @@
                     console.error('Error loading events:', error);
                 }
                 
-                // Return default events if nothing stored or error occurred
                 return [
                     {
                         id: 1,
@@ -663,7 +661,7 @@
                 };
 
                 this.events.push(newEvent);
-                this.saveEvents(); // Save to localStorage
+                this.saveEvents(); 
                 this.renderCalendar();
                 this.renderUpcomingEvents();
 
