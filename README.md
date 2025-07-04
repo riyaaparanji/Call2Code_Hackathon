@@ -1,7 +1,8 @@
 🎓 Club Connect
 
-> _The only stop you need to manage all your clubs, events, and chaos at Manipal._  
-> Built at **ISTE Devcraft Hackathon**, fueled by 2 cups of coffee,  and 1 mini existential crisis.
+> From scattered announcements to chaotic recruitments, student clubs are running on broken systems—and it’s costing students the chance to truly connect and grow.
+> ClubConnect is your one stop solution to all these problems 
+> Built at **Call2Code Hackathon**, fueled by 2 cups of coffee,  and a mini existential crisis.
 
 
  🧠 What is Club Connect?
@@ -46,6 +47,18 @@ Did we test it? Yes. Did it break 5 mins before deadline? Also yes.
 ![Screenshot 2025-06-28 203124](https://github.com/user-attachments/assets/66db5375-36ee-43ab-a06b-84007cc1afa1)
 ### Recruitment Form![Screenshot 2025-06-28 203030](https://github.com/user-attachments/assets/514b7d20-af58-4319-9288-1e016fe1eb73)
 ### Gallery Page (kindly watch the video or run locally to see more)![Screenshot 2025-06-28 203445](https://github.com/user-attachments/assets/2dcc96b7-3acf-483d-bfaf-f2c00cba1054)
+
+🔌 API Integrations
+ClubConnect leverages the following APIs to enhance the student experience:
+
+📧 Gmail Sign-In (Google Identity Services)
+Enables secure and seamless sign-up/login using Google accounts, eliminating the need for separate credentials.
+
+📅 Google Calendar API
+Syncs club events directly to the user's Google Calendar, ensuring they never miss out on meetings, deadlines, or college activities.
+
+🌤️ OpenWeather API
+Displays real-time weather updates on the homepage, helping students plan for outdoor events and campus activities.
 
 
 
