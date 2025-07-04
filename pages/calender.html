@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
     <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calendar - ClubConnect</title>
-    
     <style>
         * {
             margin: 0;
@@ -64,6 +65,12 @@
         .nav-links a.active {
             background: rgba(168, 85, 247, 0.2);
             color: #a855f7;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .calendar-container {
@@ -142,6 +149,12 @@
         .add-event-btn:hover {
             background: linear-gradient(135deg, #047857, #059669);
             transform: translateY(-2px);
+        }
+
+        .add-event-btn:disabled {
+            background: rgba(75, 85, 99, 0.5);
+            cursor: not-allowed;
+            transform: none;
         }
 
         .calendar-grid {
@@ -294,9 +307,20 @@
             font-weight: 500;
         }
 
-        .event-type.club { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .event-type.council { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .event-type.personal { background: rgba(234, 88, 12, 0.2); color: #ea580c; }
+        .event-type.club {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .event-type.council {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .event-type.personal {
+            background: rgba(234, 88, 12, 0.2);
+            color: #ea580c;
+        }
 
         /* Modal styles */
         .modal {
@@ -421,7 +445,6 @@
             background: rgba(75, 85, 99, 0.8);
         }
 
-        
         .success-message {
             position: fixed;
             top: 20px;
@@ -436,46 +459,52 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
         }
 
-        
+        .auth-status {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-left: 10px;
+        }
+
+        .auth-status.connected {
+            color: #10b981;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
             }
-            
             .header {
                 flex-direction: column;
                 gap: 15px;
             }
-            
             .calendar-header {
                 flex-direction: column;
                 gap: 15px;
             }
-            
             .calendar-nav {
                 order: -1;
             }
-            
             .day-cell {
                 min-height: 80px;
                 padding: 8px;
             }
-            
             .day-number {
                 font-size: 1rem;
             }
-            
             .event {
                 font-size: 0.7rem;
                 padding: 2px 6px;
             }
         }
     </style>
-    <link rel="icon" href="clubconnect_icon_64x64.ico" type="image/x-icon">
 </head>
 <body>
     <div class="container">
@@ -489,6 +518,10 @@
                 <a href="discover.html">Discover Clubs</a>
                 <a href="recruitment.html">Recruitments</a>
             </nav>
+            <div class="auth-section">
+                <button id="authorize_button" class="add-event-btn">🔐 Connect Google</button>
+                <span id="auth_status" class="auth-status">Not connected</span>
+            </div>
         </div>
 
         <!-- Calendar -->
@@ -511,7 +544,7 @@
         </div>
     </div>
 
- 
+    <!-- Event Modal -->
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -544,6 +577,12 @@
                     <label for="eventDescription">Description</label>
                     <textarea id="eventDescription"></textarea>
                 </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="addToGoogle" checked>
+                        Also add to Google Calendar
+                    </label>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Event</button>
@@ -553,6 +592,20 @@
     </div>
 
     <script>
+        // Google Calendar API Configuration
+        const CLIENT_ID = '341316073446-82gfiek1gmloq89nglfh6blroin7lpio.apps.googleusercontent.com';
+        const API_KEY = 'AIzaSyATmqsk6YkN7f_5RmKUKQIImgtUe23lwVM';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+        const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
+
+       
+
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+        let isGoogleConnected = false;
+
+        // Calendar Class
         class Calendar {
             constructor() {
                 this.currentDate = new Date();
@@ -577,12 +630,11 @@
                 } catch (error) {
                     console.error('Error loading events:', error);
                 }
-                
                 return [
                     {
                         id: 1,
                         title: "Club Meeting",
-                        date: "2025-06-30",
+                        date: "2025-07-08",
                         time: "14:00",
                         type: "club",
                         description: "Monthly club meeting"
@@ -590,7 +642,7 @@
                     {
                         id: 2,
                         title: "Council Session",
-                        date: "2025-07-02",
+                        date: "2025-07-10",
                         time: "10:00",
                         type: "council",
                         description: "Student council meeting"
@@ -643,12 +695,13 @@
                 });
             }
 
-            addEvent() {
+            async addEvent() {
                 const title = document.getElementById('eventTitle').value.trim();
                 const date = document.getElementById('eventDate').value;
                 const time = document.getElementById('eventTime').value;
                 const type = document.getElementById('eventType').value;
                 const description = document.getElementById('eventDescription').value.trim();
+                const addToGoogle = document.getElementById('addToGoogle').checked;
 
                 if (!title || !date || !time || !type) {
                     alert('Please fill in all required fields');
@@ -657,25 +710,61 @@
 
                 const newEvent = {
                     id: Date.now(),
-                    title, date, time, type, description
+                    title,
+                    date,
+                    time,
+                    type,
+                    description
                 };
 
                 this.events.push(newEvent);
-                this.saveEvents(); 
+                this.saveEvents();
                 this.renderCalendar();
                 this.renderUpcomingEvents();
 
+                // Add to Google Calendar if connected and checkbox is checked
+                if (isGoogleConnected && addToGoogle && gapi.client.getToken()) {
+                    try {
+                        const startDateTime = new Date(`${date}T${time}:00`);
+                        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // +1 hour
+
+                        const event = {
+                            summary: title,
+                            description: description,
+                            start: {
+                                dateTime: startDateTime.toISOString(),
+                                timeZone: 'Asia/Kolkata'
+                            },
+                            end: {
+                                dateTime: endDateTime.toISOString(),
+                                timeZone: 'Asia/Kolkata'
+                            }
+                        };
+
+                        await gapi.client.calendar.events.insert({
+                            calendarId: 'primary',
+                            resource: event
+                        });
+
+                        this.showSuccessMessage('Event added to both calendars!');
+                    } catch (error) {
+                        console.error('Google Calendar error:', error);
+                        this.showSuccessMessage('Event added locally (Google Calendar sync failed)');
+                    }
+                } else {
+                    this.showSuccessMessage('Event added successfully!');
+                }
+
                 document.getElementById('eventForm').reset();
                 document.getElementById('eventModal').style.display = 'none';
-                this.showSuccessMessage('Event added successfully!');
             }
 
             renderCalendar() {
                 const monthNames = ["January", "February", "March", "April", "May", "June",
-                                    "July", "August", "September", "October", "November", "December"];
+                    "July", "August", "September", "October", "November", "December"];
                 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-                document.getElementById('monthYear').textContent =
+                document.getElementById('monthYear').textContent = 
                     `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
 
                 const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
@@ -693,9 +782,14 @@
                     const isToday = this.isToday(date);
                     const dayEvents = this.getEventsForDate(date);
 
-                    html += `<div class="day-cell ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''}" data-date="${this.formatDate(date)}">
+                    html += `<div class="day-cell ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''}" 
+                             data-date="${this.formatDate(date)}">
                         <div class="day-number">${date.getDate()}</div>
-                        ${dayEvents.map(event => `<div class="event ${event.type}-event" title="${event.title} - ${event.time}">${event.title}</div>`).join('')}
+                        ${dayEvents.map(event => 
+                            `<div class="event ${event.type}-event" title="${event.title} - ${event.time}">
+                                ${event.title}
+                            </div>`
+                        ).join('')}
                     </div>`;
                 }
 
@@ -710,16 +804,15 @@
                     .sort((a, b) => new Date(a.date) - new Date(b.date))
                     .slice(0, 5);
 
-                document.getElementById('upcomingEvents').innerHTML =
-                    upcoming.map(event => `
-                        <div class="event-item ${event.type}-event">
-                            <div class="event-title">${event.title}</div>
-                            <div class="event-details">
-                                <span>${this.formatEventDate(event.date)} at ${event.time}</span>
-                                <span class="event-type ${event.type}">${this.capitalizeFirst(event.type)}</span>
-                            </div>
+                document.getElementById('upcomingEvents').innerHTML = upcoming.map(event => 
+                    `<div class="event-item ${event.type}-event">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-details">
+                            <span>${this.formatEventDate(event.date)} at ${event.time}</span>
+                            <span class="event-type ${event.type}">${this.capitalizeFirst(event.type)}</span>
                         </div>
-                    `).join('') || '<p style="color: #9ca3af;">No upcoming events</p>';
+                    </div>`
+                ).join('') || '<p style="color: #9ca3af;">No upcoming events</p>';
             }
 
             getEventsForDate(date) {
@@ -759,9 +852,179 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // Google Calendar API Functions
+        function gapiLoaded() {
+            gapi.load('client', async () => {
+                await gapi.client.init({
+                    apiKey: API_KEY,
+                    discoveryDocs: [DISCOVERY_DOC],
+                });
+                gapiInited = true;
+                maybeEnableButtons();
+            });
+        }
+
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                document.getElementById('authorize_button').disabled = false;
+            }
+        }
+
+        function updateAuthStatus(connected) {
+            isGoogleConnected = connected;
+            const statusEl = document.getElementById('auth_status');
+            const authBtn = document.getElementById('authorize_button');
+            
+            if (connected) {
+                statusEl.textContent = 'Connected';
+                statusEl.className = 'auth-status connected';
+                authBtn.textContent = '✅ Google Connected';
+                authBtn.disabled = true;
+            } else {
+                statusEl.textContent = 'Not connected';
+                statusEl.className = 'auth-status';
+                authBtn.textContent = '🔐 Connect Google';
+                authBtn.disabled = false;
+            }
+        }
+
+        // Initialize everything when the page loads
+        window.addEventListener('load', () => {
+            gapiLoaded();
+            gisLoaded();
+
+            // Initialize the calendar
             new Calendar();
+
+            // Set up Google Auth
+            document.getElementById('authorize_button').addEventListener('click', () => {
+                tokenClient.callback = async (resp) => {
+                    if (resp.error) {
+                        console.error('Auth error:', resp);
+                        alert('❌ Google Authentication failed');
+                        return;
+                    }
+                    console.log('Google Auth successful');
+                    
+                    try {
+                        // Test the connection by fetching user's calendar list
+                        const response = await gapi.client.calendar.calendarList.list();
+                        console.log('Calendar access verified:', response);
+                        updateAuthStatus(true);
+                    } catch (error) {
+                        console.error('Calendar access error:', error);
+                        console.error('Error details:', error.result?.error);
+                        
+                        // More specific error handling
+                        if (error.status === 403) {
+                            alert('⚠️ Google Calendar API access denied. Please check API permissions.');
+                        } else if (error.status === 401) {
+                            alert('⚠️ Authentication expired. Please reconnect.');
+                            updateAuthStatus(false);
+                        } else {
+                            alert(`⚠️ Google Calendar access failed: ${error.result?.error?.message || error.message}`);
+                        }
+                    }
+                };
+
+                // Check if we already have a valid token
+                if (gapi.client.getToken() === null) {
+                    // Prompt the user to select a Google Account and grant permissions
+                    tokenClient.requestAccessToken({prompt: 'consent'});
+                } else {
+                    // Skip authorization flow and go straight to API call
+                    tokenClient.requestAccessToken({prompt: ''});
+                }
+            });
+
+            // Check if user is already authorized
+            if (gapi.client.getToken() !== null) {
+                updateAuthStatus(true);
+            }
         });
+
+        // Load Google APIs
+        function loadGoogleAPIs() {
+            const script1 = document.createElement('script');
+            script1.src = 'https://apis.google.com/js/api.js';
+            script1.onload = gapiLoaded;
+            document.head.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.src = 'https://accounts.google.com/gsi/client';
+            script2.onload = gisLoaded;
+            document.head.appendChild(script2);
+        }
+
+        // Initialize Google APIs when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadGoogleAPIs);
+        } else {
+            loadGoogleAPIs();
+        }
     </script>
 </body>
 </html>
+                    
+//                     console.log('Google Auth successful');
+//                     updateAuthStatus(true);
+                    
+//                     try {
+//                         // Test the connection by fetching user's calendar list
+//                         const response = await gapi.client.calendar.calendarList.list();
+//                         console.log('Calendar access verified');
+//                     } catch (error) {
+//                         console.error('Calendar access error:', error);
+//                         alert('⚠️ Google Calendar access failed');
+//                         updateAuthStatus(false);
+//                     }
+//                 };
+
+//                 // Check if we already have a valid token
+//                 if (gapi.client.getToken() === null) {
+//                     // Prompt the user to select a Google Account and grant permissions
+//                     tokenClient.requestAccessToken({prompt: 'consent'});
+//                 } else {
+//                     // Skip authorization flow and go straight to API call
+//                     tokenClient.requestAccessToken({prompt: ''});
+//                 }
+//             });
+
+//             // Check if user is already authorized
+//             if (gapi.client.getToken() !== null) {
+//                 updateAuthStatus(true);
+//             }
+//         });
+
+//         // Load Google APIs
+//         function loadGoogleAPIs() {
+//             const script1 = document.createElement('script');
+//             script1.src = 'https://apis.google.com/js/api.js';
+//             script1.onload = gapiLoaded;
+//             document.head.appendChild(script1);
+
+//             const script2 = document.createElement('script');
+//             script2.src = 'https://accounts.google.com/gsi/client';
+//             script2.onload = gisLoaded;
+//             document.head.appendChild(script2);
+//         }
+
+//         // Initialize Google APIs when DOM is ready
+//         if (document.readyState === 'loading') {
+//             document.addEventListener('DOMContentLoaded', loadGoogleAPIs);
+//         } else {
+//             loadGoogleAPIs();
+//         }
+//     </script>
+// </body>
+// </html>

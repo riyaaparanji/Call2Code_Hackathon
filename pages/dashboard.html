@@ -15,6 +15,53 @@
       box-sizing: border-box;
     }
 
+    .weather-card {
+  
+  background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 25px;
+}
+
+.weather-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.weather-card input, .weather-card button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  background-color: #4a4a4a;
+  opacity: 0.15;
+}
+.weather-card input::placeholder{
+  color: white;
+}
+.weather-card button {
+  background: #0f0f23;
+  color: white;
+  cursor: pointer;
+}
+
+/* .weather-card button::placeholder{
+  color: white;
+  opacity: 1;
+} */
+
+.weather-info {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
     :root {
       --primary: #6366f1;
       --primary-dark: #4f46e5;
@@ -197,6 +244,32 @@
       align-items: center;
       margin-bottom: 2rem;
     }
+    .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-left h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Optional: style the notif-icon */
+.notif-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 
     .header-left h1 {
       font-size: 2rem;
@@ -633,6 +706,38 @@
   border-radius: 10px;
   margin-bottom: 20px;
 }
+.notification-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align contents to the left */
+  justify-content: center;
+}
+
+/* Inside the card */
+.notification-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notif-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.notif-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
 
   </style>
 </head>
@@ -718,15 +823,33 @@
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
       <header class="header">
-        <div class="header-left">
-          <h1 id="welcomeMessage">Welcome back! 👋</h1>
-        </div>
-        <div class="header-right">
-          <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-        </div>
-      </header>
+  <div class="header-left">
+    <h1 id="welcomeMessage">Welcome back! 👋</h1>
+  </div>
+
+  <!-- <div class="header-right">
+    Glass card wrapper
+    <div class="notification-card">
+      <div class="notification-wrapper">
+        <button id="notifBtn" class="notif-icon">🔔</button>
+        <span class="notif-text"><div id="notifModal" class="notif-modal hidden">
+        <ul id="notifList"></ul>
+      Notifications</span></div>
+      </div>
+      
+    </div>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+  </div> -->
+</header>
 
       <!-- Stats Grid -->
+       <div class="card weather-card">
+  <h3>🌦 Weather</h3>
+  <input type="text" id="weatherCity" placeholder="Enter city" />
+  <button onclick="fetchWeather()">Go</button>
+  <div id="weatherResult" class="weather-info"></div>
+</div>
       <section class="stats-grid">
         <div class="stat-card">
           <div class="stat-header">
@@ -769,12 +892,79 @@
         </div>
       </section>
 
-  
+      
+
+      <!-- Content Grid -->
+      <section class="content-grid">
+        <!-- Recent Activity -->
+        <!-- <div class="activity-card">
+          <div class="card-header">
+            <h2 class="card-title">Recent Activity</h2>
+            <a href="#" class="view-all">View All</a>
+          </div>
+          
+          <div class="activity-feed" id="activityFeed">
+            <div class="no-data">Loading recent activities...</div>
+          </div>
+        </div> -->
+
+        <!-- Quick Actions -->
+        <!-- <div class="quick-actions">
+          <a href="discover.html" class="action-btn">
+            <div class="action-icon">🔍</div>
+            <div class="action-content">
+              <h4>Discover Clubs</h4>
+              <p>Find new clubs to join</p>
+            </div>
+          </a>
+
+          <a href="calendar.html" class="action-btn">
+            <div class="action-icon">🗓️</div>
+            <div class="action-content">
+              <h4>View Calendar</h4>
+              <p>See all upcoming events</p>
+            </div>
+          </a>
+
+          <a href="myclubs.html" class="action-btn">
+            <div class="action-icon">🎯</div>
+            <div class="action-content">
+              <h4>My Clubs</h4>
+              <p>Manage your memberships</p>
+            </div>
+          </a>
+
+          <a href="recruitment.html" class="action-btn">
+            <div class="action-icon">👥</div>
+            <div class="action-content">
+              <h4>Recruitment</h4>
+              <p>Join recruitment drives</p>
+            </div>
+          </a>
+        </div>
+      </section> -->
+
+      <!-- Upcoming Events -->
+      <!-- <section>
+        <div class="card-header">
+          <h2 class="card-title">Upcoming Events</h2>
+          <a href="calendar.html" class="view-all">View Calendar</a>
+        </div>
+
+        <div class="events-grid" id="eventsGrid">
+          <div class="no-data">Loading upcoming events...</div>
+        </div>
+      </section>
+    </main>
+  </div> -->
+
+  <!-- Firebase SDKs (if not already included) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
+  // Your Firebase config (REPLACE with yours if not already included)
   const firebaseConfig = {
     apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
   authDomain: "club-management-hackathon.firebaseapp.com",
@@ -788,7 +978,7 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-
+  // DOMContentLoaded ensures all elements are loaded before accessing them
   document.addEventListener("DOMContentLoaded", () => {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -799,9 +989,12 @@
             const userData = docSnap.data();
             const name = userData.name || "User";
 
+            // Example DOM replacements
             document.querySelectorAll(".insert-user-name").forEach(el => {
               el.textContent = name;
             });
+
+            // Optional: Set avatar initials
             const initials = name.split(' ').map(word => word[0]).join('').slice(0, 2).toUpperCase();
             const avatarEl = document.getElementById("user-avatar");
             if (avatarEl) avatarEl.textContent = initials;
@@ -818,6 +1011,124 @@
     });
   });
 </script>
+
+<script>
+  function fetchWeather() {
+    const city = document.getElementById("weatherCity").value.trim();
+    const resultBox = document.getElementById("weatherResult");
+    if (!city) return alert("Enter a city.");
+
+    resultBox.innerHTML = "Loading...";
+
+    fetch(`https://wttr.in/${city}?format=j1`)
+      .then(res => res.json())
+      .then(data => {
+        const w = data.current_condition[0];
+        resultBox.innerHTML = `
+          <strong>${city}</strong><br>
+          ${w.weatherDesc[0].value}<br>
+          🌡 ${w.temp_C}°C | 💧 ${w.humidity}%<br>
+          🌬 ${w.windspeedKmph} km/h
+        `;
+      })
+      .catch(err => {
+        resultBox.innerHTML = "Couldn't fetch weather.";
+        console.error(err);
+      });
+  }
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    doc,
+    getDocs,
+    getDoc,
+    setDoc,
+    query,
+    where
+  } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdBUo5owS1zuMrccVwH_2zerdDDAvKMS8",
+    authDomain: "club-management-hackathon.firebaseapp.com",
+    projectId: "club-management-hackathon",
+    storageBucket: "club-management-hackathon.appspot.com",
+    messagingSenderId: "341316073446",
+    appId: "1:341316073446:web:275f1b3d5ec9565aa38827"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const notifBtn = document.getElementById("notifBtn");
+  const notifModal = document.getElementById("notifModal");
+  const notifList = document.getElementById("notifList");
+
+  notifBtn.addEventListener("click", () => {
+    notifModal.classList.toggle("hidden");
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await checkRecruitmentNotifications(user.uid);
+      await loadUserNotifications(user.uid);
+    }
+  });
+
+  async function checkRecruitmentNotifications(uid) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const recruitmentsSnap = await getDocs(collection(db, 'recruitments'));
+    for (const docSnap of recruitmentsSnap.docs) {
+      const data = docSnap.data();
+      const deadline = data.deadline?.toDate?.();
+      if (!deadline) continue;
+
+      deadline.setHours(0, 0, 0, 0);
+
+      if (deadline.getTime() === tomorrow.getTime()) {
+        const notifId = `${uid}_${docSnap.id}`;
+        const notifRef = doc(db, 'notifications', notifId);
+        const notifSnap = await getDoc(notifRef);
+        if (!notifSnap.exists()) {
+          await setDoc(notifRef, {
+            title: `Deadline Tomorrow: ${data.title}`,
+            message: `The recruitment "${data.title}" ends tomorrow.`,
+            uid,
+            timestamp: new Date(),
+            read: false
+          });
+        }
+      }
+    }
+  }
+
+  async function loadUserNotifications(uid) {
+    notifList.innerHTML = '<li>Loading...</li>';
+    const q = query(collection(db, "notifications"), where("uid", "==", uid));
+    const snap = await getDocs(q);
+    notifList.innerHTML = "";
+
+    snap.forEach((docSnap) => {
+      const n = docSnap.data();
+      const li = document.createElement("li");
+      li.textContent = n.title + " — " + new Date(n.timestamp.seconds * 1000).toLocaleDateString();
+      notifList.appendChild(li);
+    });
+  }
+</script>
+
+
 
   </body>
   </html>
