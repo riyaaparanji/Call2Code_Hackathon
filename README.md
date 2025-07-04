@@ -48,24 +48,21 @@ Did we test it? Yes. Did it break 5 mins before deadline? Also yes.
 ### Recruitment Form![Screenshot 2025-06-28 203030](https://github.com/user-attachments/assets/514b7d20-af58-4319-9288-1e016fe1eb73)
 ### Gallery Page (kindly watch the video or run locally to see more)![Screenshot 2025-06-28 203445](https://github.com/user-attachments/assets/2dcc96b7-3acf-483d-bfaf-f2c00cba1054)
 
-🔌 API Integrations
+##🔌 API Integrations
 ClubConnect leverages the following APIs to enhance the student experience:
 
 📧 Gmail Sign-In (Google Identity Services)
 Enables secure and seamless sign-up/login using Google accounts, eliminating the need for separate credentials.
+###![Screenshot 2025-07-05 033231](https://github.com/user-attachments/assets/a34b1080-020f-4e99-ae30-387fc897ecb7)
+
 
 📅 Google Calendar API
 Syncs club events directly to the user's Google Calendar, ensuring they never miss out on meetings, deadlines, or college activities.
+###![Screenshot 2025-07-05 033516](https://github.com/user-attachments/assets/9719f7c8-825b-479a-bea1-70cfb56d10fa)
+
 
 🌤️ OpenWeather API
 Displays real-time weather updates on the homepage, helping students plan for outdoor events and campus activities.
+###![Screenshot 2025-07-05 033625](https://github.com/user-attachments/assets/ca8c8c02-f9dc-4971-86e3-28666be83743)
 
-
-
-
-## 🏁 How to Run Locally
-
-```bash
-git clone https://github.com/riyaaparanji/iste-devcraft-hackathon.git
-cd club-platform
-open index.html
+Thankyou
