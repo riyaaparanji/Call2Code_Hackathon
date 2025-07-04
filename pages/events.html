@@ -162,7 +162,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Loading and injecting the events from fb
     async function loadEvents() {
       const grid = document.getElementById("eventsGrid");
       const snapshot = await getDocs(collection(db, "events"));

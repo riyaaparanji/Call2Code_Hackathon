@@ -26,7 +26,7 @@
     };
     firebase.initializeApp(firebaseConfig);
 
-    // Sign out the user
+    
     firebase.auth().signOut().then(() => {
       // Redirect to login page after sign-out
       window.location.href = "login.html";
